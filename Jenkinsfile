@@ -6,6 +6,10 @@ pipeline {
         maven 'Maven'
     }
 
+    options {
+        skipStagesAfterUnstable()
+    }
+
     stages {
         stage('Build') {
             steps {
@@ -21,6 +25,13 @@ pipeline {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
+            }
+        }
+
+        stage('Deliver') {
+            steps {
+                bat 'mvn -B jar:jar install:install'
+                bat 'java -jar target/my-app-1.0-SNAPSHOT.jar'
             }
         }
     }
